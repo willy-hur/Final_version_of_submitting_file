@@ -2,7 +2,6 @@ from TTs import *
 from submit_main_def import *
 import csv
 
-
 counter = 0
 FPSCLOCK = pygame.time.Clock()
 pygame.init()
@@ -29,8 +28,8 @@ yellow = 0
 num_input = 0
 button_next = 0
 button_down = 0
-s = 0 #한번만 읽도록 만드는 일종의 카운터
-n = 0 #테스트용
+s = 0  # 한번만 읽도록 만드는 일종의 카운터
+n = 0  # 테스트용
 input_1 = ''
 check = 0
 check_front = 0
@@ -39,8 +38,11 @@ end = 0
 checking_personal_info = 0
 extra_TTs = 0
 checking_gpio = 0
-#show = 33
+
+visit_num = 0
+# show = 33
 import csv
+
 # visit = 첫방문질문 리스트
 # visits = 대답받는 리스트
 # visit_num = 대답받는 값
@@ -51,13 +53,19 @@ p_nums = []
 whys = []
 agrees = []
 names = []
+adress = []
 num_input = 1
 checking_gpio = 0
+tts_for_juso = 0
+count_juso = 0
+JUSO_GU = 0
+z = 0
 
 # pygame 본격 시작문
 while run:
+
     checking_gpio = 0
-    num_input = 0
+    num_input = 1
     if check == 1:
         n = 0
     if check_front == 1:
@@ -73,27 +81,25 @@ while run:
             elif event.key == pygame.K_SPACE:
                 step += 1
                 check = 1
-                checking_gpio += 1
-                #check_front = 1
+                # check_front = 1
             elif event.key == pygame.K_0:
                 step -= 1
                 s -= 2
                 check = 1
             elif event.key == pygame.K_1:
                 counter += 1
-            elif event.key == pygame.K_s:
-                Y_position += 150
-            elif event.key == pygame.K_w:
-                Y_position -= 150
             elif event.key == pygame.K_a:
-                X_position -= 150
-            elif event.key == pygame.K_d:
-                X_position += 150
+                checking_gpio = 1
             elif event.key == pygame.K_9:
                 num_input = 1
             elif event.key == pygame.K_8:
                 button_down += 1
-
+            elif event.key == pygame.K_2:
+                step = 0
+                part = 2
+                p_part = 0
+                fever = 0
+                s = 9
 
     # 본격 시작
     if step == 0 and part == 0 and p_part == 0:  # 파트를 각각 part p_part, step로써 분리, step는 각 마지막 폴터안에 있는 사진기준
@@ -133,8 +139,8 @@ while run:
             while s < 3:
                 speak('접수해요')
                 s += 1
-    #if step == 3 and part == 1 and p_part == 0:
-        #part1_004()
+    # if step == 3 and part == 1 and p_part == 0:
+    # part1_004()
     if step == 2 and part == 1 and p_part == 0:
         part1_005()
         if check == 1:
@@ -223,9 +229,12 @@ while run:
         # sleep(5)
     if step == 1 and part == 2 and p_part == 0 and fever != 1:
         p_part = 1
-    #if part == 2 and step == 2 and p_part == 1:
-        #part2_family_001()
+    # if part == 2 and step == 2 and p_part == 1:
+    # part2_family_001()
     if part == 2 and step == 1 and p_part == 1:
+        numsize = len(visit)
+        # 답변 숫자 입력한 후 다음 누름
+
         X_position = 295
         Y_position = 505
         X_size = 55
@@ -241,12 +250,13 @@ while run:
                 extra_TTs += 1
         yes(red, green, yellow)
         no(red, green, yellow)
-        edge(X_position, Y_position, X_size, Y_size)
+
         if button_down == 0:
             X_position = 295
             Y_position = 505
             X_size = 55
             Y_size = 55
+            edge(X_position, Y_position, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -255,11 +265,17 @@ while run:
                     speak('예')
                     checking_personal_info += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 1
+                visit_num = num_input
+                visits.append(visit[visit_num - 1])
+
         if button_down == 1:
             X_position = 895
             Y_position = 505
             X_size = 145
             Y_size = 55
+            edge(X_position, Y_position, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -268,8 +284,18 @@ while run:
                     speak('아니요')
                     checking_personal_info += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 2
+                visit_num = num_input
+                visits.append(visit[visit_num - 1])
+        # print("처음 방문이신 가요?")
+        # print("1.예 2.아니오")  # 만약에 재방문이면 step4 에서 step 9로 이동
+        # visit_num = 0
+        # num_input = 0
+        # numsuze = 0
+        print(visits)
     if part == 2 and step == 2 and p_part == 1:
-        name()
+        name_def()
         part2_family_001()
         if check == 1:
             n = 0
@@ -278,16 +304,22 @@ while run:
             while s < 11:
                 speak('이름을 입력해주세요.')
                 s += 1
-        keyshape(counter, input_1)
-        if num_input == 1:
-            #과연 필요할까?
-            f = open('write.csv', 'a', newline='')
-            wr = csv.writer(f)
-            wr.writerow([1, '이름', input_1]) #여기에 범준이형꺼 변수 추가 + csv추가를 위한 파일명에 이름+생년월일 이런걸로 고치기
+        if checking_gpio == 1:
+            num_input = "홍길동"
+            name_num = 1
+            keyshape(counter, input_1)
+            print("이름을 입력해 주세요")
+            # jamo_join_input
+            name = num_input  # 이름 입력받아야함
+            # 답변 숫자 입력한 후 다음 누름
+            names.append(name)
+            num_input = 0
+            print(names)
     if part == 2 and step == 3 and p_part == 1:
         part2_family_002()
-        sex()
-        keyshape(counter,input_1)
+        sex_def()
+        man(red, green, yellow)
+        woman(red, green, yellow)
         if check == 1:
             n = 0
         check = 0
@@ -295,13 +327,55 @@ while run:
             while s < 12:
                 speak('성별을 입력해주세요.')
                 s += 1
-        # 과연 필요할까?
-        f = open('write.csv', 'a', newline='')
-        wr = csv.writer(f)
-        wr.writerow([2, '성별', input_1])  # 여기에 범준이형꺼 변수 추가 + csv추가를 위한 파일명에 이름+생년월일 이런걸로 고치기
+
+        if button_down == 0:
+            X_position = 295
+            Y_position = 505
+            X_size = 55
+            Y_size = 55
+            edge(X_position, Y_position, X_size, Y_size)
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while checking_personal_info < 2:
+                    speak('남성')
+                    checking_personal_info += 1
+                check = 1
+                if checking_gpio == 1:
+                    sex_num = 1
+
+        if button_down == 1:
+            X_position = 895
+            Y_position = 505
+            X_size = 55
+            Y_size = 55
+            edge(X_position, Y_position, X_size, Y_size)
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while checking_personal_info < 3:
+                    speak('여성')
+                    checking_personal_info += 1
+                check = 1
+                if checking_gpio == 1:
+                    sex_num = 2
+        # print("성별을 선택해 주세요")
+        # print("1. 남, 2. 여")
+        sex = ['남', '여']
+        numsize = len(sex)
+        sex_num = num_input
+        # 답변 숫자 입력한 후 다음 누름
+        sexs.append(sex[sex_num - 1])
+        sex_num = 0
+        numsize = 0
+        num_input = 0
+        print(sexs)
+        button_down = 0
     if part == 2 and step == 4 and p_part == 1:
         part2_family_005()
-        birth()
+        birth_def()
         keyshape(counter, input_1)
         if check == 1:
             n = 0
@@ -310,10 +384,29 @@ while run:
             while s < 13:
                 speak('생년월일을 입력해주세요.')
                 s += 1
-        # 과연 필요할까?
-        f = open('write.csv', 'a', newline='')
-        wr = csv.writer(f)
-        wr.writerow([3, '생년월일', input_1])  # 여기에 범준이형꺼 변수 추가 + csv추가를 위한 파일명에 이름+생년월일 이런걸로 고치기
+        # print("생년월일을 입력해 주세요")
+        if checking_gpio == 1:
+            num_input = "020824"
+            birth = num_input
+            # 답변 숫자 입력한 후 다음 누름
+            births.append(birth)
+            birth = 0
+            num_input = 0
+            print(births)
+            file_name = names[0] + births[0] + sexs[0]
+            f = open(file_name, 'w', encoding='utf-8')
+            wr = csv.writer(f)
+            wr.writerow([1, '이름 생년월일 성별', names[0] + births[0] + sexs[0]])
+
+        if visits[0] == '아니오':
+            file_name = names[0] + births[0] + sexs[0]
+            # f = open(file_name,'r', encoding='utf-8')
+            f = open(file_name, 'a', encoding='utf-8')
+            # lines = csv.reader(f)
+            wr = csv.writer(f)
+            if part == 2 and step == 5 and p_part == 1:
+                step = 0
+                p_part = 3
     if part == 2 and step == 5 and p_part == 1:
         part2_family_004()
         keyshape(counter, input_1)
@@ -324,20 +417,433 @@ while run:
             while s < 14:
                 speak('전화번호를 입력해주세요.')
                 s += 1
-        # 과연 필요할까?
-        f = open('write.csv', 'a', newline='')
-        wr = csv.writer(f)
-        wr.writerow([4, '전화번호', input_1])  # 여기에 범준이형꺼 변수 추가 + csv추가를 위한 파일명에 이름+생년월일 이런걸로 고치기
+        # print("전화번호를 입력해주세요")
+        if checking_gpio == 1:
+            num_input = "01012345678"
+            p_num = num_input
+            # 답변 숫자 입력한 후 다음 누름
+            p_nums.append(p_num)
+            p_num = 0
+            num_input = 0
+            wr.writerow([2, '전화번호', p_nums[0]])
+        print(p_nums)
+
     if part == 2 and step == 6 and p_part == 1:
-        #꼭꼭 주소 추가하기...
+        # 꼭꼭 주소 추가하기...
         part2_family_003()
         juso()
         keyshape(counter, input_1)
+        if check == 1:
+            n = 0
+        check = 0
+        if n == 1:
+            while tts_for_juso < 1:
+                speak('주소를 입력해주세요, 맞는 번호를 누르시면 됩니다.')
+                tts_for_juso += 1
     if part == 2 and step == 7 and p_part == 1:
+        juso_gu()
+
+        if check == 1:
+            n = 0
+        check = 0
+        if n == 1:
+            while tts_for_juso < 17:
+                JUSO_GU = ad[count_juso]
+                speak(JUSO_GU)
+                count_juso += 1
+                tts_for_juso += 1
+            num_input = 2
+        if checking_gpio == 1:
+            ad_len = len(ad)
+            # num input받고
+            ad_num = num_input
+            adress.append(ad[ad_num - 1])
+            print(adress)
+            ad_num = 0
+            num_input = 0
+            wr.writerow([3, '주소 구:', adress[ad_num - 1]])
+        checking_gpio = 0
+
+        if ad[0] in adress:  # 중구
+            count_juso = 0
+            juso_junggo()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 28:
+                    JUSO_GU = ad_jg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+                num_input = 1
+            if checking_gpio == 1:
+                numsize = len(ad_jg)
+                ad_num = num_input
+                adress.append(ad_jg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[1] in adress:  # 서구
+            count_juso = 0
+            juso_sugu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 27:
+                    JUSO_GU = ad_sg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                numsize = len(ad_jg)
+                ad_num = num_input
+                adress.append(ad_jg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+        elif ad[2] in adress:  # 동구
+            count_juso = 0
+            juso_donggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 21:
+                    JUSO_GU = ad_dg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_dg)
+                adress.append(ad_dg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+                print(adress)
+
+
+        elif ad[3] in adress:  # 영도구
+            count_juso = 0
+            juso_yongdogu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_ydg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_ydg)
+                adress.append(ad_ydg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[4] in adress:  # 부산진구
+            count_juso = 0
+            juso_busanjingu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 28:
+                    JUSO_GU = ad_jg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_jg)
+                adress.append(ad_jg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[5] in adress:  # 동래구
+            count_juso = 0
+            juso_donglaygu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_drg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_drg)
+                adress.append(ad_drg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[6] in adress:  # 남구
+            count_juso = 0
+            juso_namgu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 23:
+                    JUSO_GU = ad_ng[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_ng)
+                adress.append(ad_ng[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[7] in adress:  # 북구
+            count_juso = 0
+            juso_bokygu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 22:
+                    JUSO_GU = ad_bg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_bg)
+                adress.append(ad_bg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[8] in adress:  # 해운대구
+            count_juso = 0
+            juso_heyundaygu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_hudg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_hudg)
+                adress.append(ad_hudg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+                print(adress)
+
+
+        elif ad[9] in adress:  # 사하구
+            count_juso = 0
+            juso_sahagu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_shg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_shg)
+                adress.append(ad_shg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[10] in adress:  # 금정구
+            count_juso = 0
+            juso_gumjunggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 30:
+                    JUSO_GU = ad_gjg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_gjg)
+                adress.append(ad_gjg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[11] in adress:  # 강서구
+            count_juso = 0
+            juso_gangsogu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 38:
+                    JUSO_GU = ad_gsg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_gsg)
+                adress.append(ad_gsg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[12] in adress:  # 연제구
+            count_juso = 0
+            juso_yenjaegu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 19:
+                    JUSO_GU = ad_yjg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_yjg)
+                adress.append(ad_yjg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[13] in adress:  # 수영구
+            count_juso = 0
+            juso_suyonggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 22:
+                    JUSO_GU = ad_syg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_syg)
+                adress.append(ad_syg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+                print(adress)
+
+
+        elif ad[14] in adress:  # 사상구
+            count_juso = 0
+            juso_sasanggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_ssg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_ssg)
+                adress.append(ad_ssg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+
+        elif ad[15] in adress:  # 기장구
+            count_juso = 0
+            juso_gijianggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 22:
+                    JUSO_GU = ad_kjg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_kjg)
+                adress.append(ad_kjg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress[ad_num - 1]])
+            print(adress)
+
+        print("상세주소를 입력해 주세요")
+        # 주소 입력받기
+        # adress.append(?)
+        print(adress)
+        # ad_num=num_input 주소받기
+
+        #wr.writerow([3, '상세 주소', adress[]])
+
+    if part == 2 and step == 8 and p_part == 1:
         step = 0
         p_part = 3
-#####################################
-        # 접촉위치
+        checking_gpio = 0
+    #####################################
+    # 접촉위치
     if part == 2 and step == 0 and p_part == 3:
         check_T()
         if check == 1:
@@ -354,7 +860,8 @@ while run:
         Y_position = 145
         X_size = 150
         Y_size = 150
-        keyshape(counter, input_1)
+        numsize = len(why)
+
         part2_travel_final()
         if button_down == 0:
             edge(X_position, Y_position, X_size, Y_size)
@@ -366,6 +873,12 @@ while run:
                     speak('자가격리.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 1
+                why_num = num_input
+                whys.append(why[why_num - 1])
+                wr.writerow([4, '검사경위', whys[why_num - 1]])
+            checking_gpio = 0
         if button_down == 1:
             edge(X_position + 200, Y_position, X_size, Y_size)
             if check == 1:
@@ -376,6 +889,12 @@ while run:
                     speak('증상이 있어서 왔어요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 2
+                why_num = num_input
+                whys.append(why[why_num - 1])
+                wr.writerow([4, '검사경위', whys[why_num - 1]])
+            checking_gpio = 0
         if button_down == 2:
             edge(X_position + 400, Y_position, X_size, Y_size)
             if check == 1:
@@ -386,6 +905,12 @@ while run:
                     speak('보건소 재난문자 연락받고 왔어요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 3
+                why_num = num_input
+                whys.append(why[why_num - 1])
+                wr.writerow([4, '검사경위', whys[why_num - 1]])
+            checking_gpio = 0
         if button_down == 3:
             edge(X_position + 600, Y_position, X_size, Y_size)
             if check == 1:
@@ -396,6 +921,12 @@ while run:
                     speak('해외입국.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 4
+                why_num = num_input
+                whys.append(why[why_num - 1])
+                wr.writerow([4, '검사경위', whys[why_num - 1]])
+            checking_gpio = 0
         if button_down == 4:
             edge(X_position, Y_position + 200, X_size, Y_size)
             if check == 1:
@@ -406,6 +937,12 @@ while run:
                     speak('집단 발병지역에 방문했어요')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 5
+                why_num = num_input
+                whys.append(why[why_num - 1])
+                wr.writerow([4, '검사경위', whys[why_num - 1]])
+            checking_gpio = 0
         if button_down == 5:
             edge(X_position + 200, Y_position + 200, X_size, Y_size)
             if check == 1:
@@ -416,6 +953,12 @@ while run:
                     speak('확진자와 접촉했어요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 6
+                why_num = num_input
+                whys.append(why[why_num - 1])
+                wr.writerow([4, '검사경위', whys[why_num - 1]])
+            checking_gpio = 0
         if button_down == 6:
             edge(X_position + 400, Y_position + 200, X_size, Y_size)
             if check == 1:
@@ -426,12 +969,23 @@ while run:
                     speak('본인 판단으로 왔어요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 7
+                why_num = num_input
+                whys.append(why[why_num - 1])
+                wr.writerow([4, '검사경위', whys[why_num - 1]])
+            checking_gpio = 0
+        # num_input = 0 여기서는 초기화 하면 x
 
-########################################################################
+
+
+
+    ########################################################################
     if part == 2 and step == 2 and p_part == 3:
         step = 8
         p_part = 1
-    if part == 2 and step == 8 and p_part == 1:
+        button_down = 0
+    if part == 2 and step == 9 and p_part == 1:
         check_S()
 
         if check == 1:
@@ -469,8 +1023,10 @@ while run:
             while s < 19:
                 speak('아래 버튼을 누르면 증상 종류를 선택할 수 있습니다. 맞는 증상을 선택하시고 다음 버튼을 누르세요')
                 s += 1
-    #if part == 2 and step == 3 and p_part == 2:
-        keyshape(counter, input_1)  # 범분이형 input 그후 아래 if문도 바꾸기
+        # if part == 2 and step == 3 and p_part == 2:
+        numsize = len(symptom)
+        symptoms = []
+        symptom_num = num_input  # 사이사이에 다음버튼 넣기
         # input_mode가 3일때
         input_mode = 3
         if button_down == 0:
@@ -483,8 +1039,13 @@ while run:
                     speak('열나요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 1
+                symptom = "고열(37.5이상)"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 1:
-            edge(X_position+150, Y_position, X_size, Y_size)
+            edge(X_position + 150, Y_position, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -493,6 +1054,12 @@ while run:
                     speak('기침나요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 2
+                symptom = "기침"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
+
         if button_down == 2:
             edge(X_position + 300, Y_position, X_size, Y_size)
             if check == 1:
@@ -503,6 +1070,11 @@ while run:
                     speak('숨쉬기 힘들어요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 3
+                symptom = "호흡곤란"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 3:
             edge(X_position + 450, Y_position, X_size, Y_size)
             if check == 1:
@@ -513,6 +1085,11 @@ while run:
                     speak('가슴이 답답해요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 4
+                symptom = "가슴통증"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 4:
             edge(X_position + 600, Y_position, X_size, Y_size)
             if check == 1:
@@ -523,6 +1100,11 @@ while run:
                     speak('목이 아파요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 5
+                symptom = "인후통"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 5:
             edge(X_position + 750, Y_position, X_size, Y_size)
             if check == 1:
@@ -533,6 +1115,11 @@ while run:
                     speak('냄새를 못 맡아요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 6
+                symptom = "후각상실"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 6:
             edge(X_position + 900, Y_position, X_size, Y_size)
             if check == 1:
@@ -543,8 +1130,13 @@ while run:
                     speak('가래가 있어요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 7
+                symptom = "가래"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 7:
-            edge(X_position, Y_position+150, X_size, Y_size)
+            edge(X_position, Y_position + 150, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -553,8 +1145,13 @@ while run:
                     speak('몸살있어요나 근육통이 있어요.')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 8
+                symptom = "근육통"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 8:
-            edge(X_position + 150, Y_position+150, X_size, Y_size)
+            edge(X_position + 150, Y_position + 150, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -563,8 +1160,13 @@ while run:
                     speak('으슬으슬 떨려요')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 9
+                symptom = "오한"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 9:
-            edge(X_position + 300, Y_position+150, X_size, Y_size)
+            edge(X_position + 300, Y_position + 150, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -573,8 +1175,13 @@ while run:
                     speak('콧물 나요')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 10
+                symptom = "콧물"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 10:
-            edge(X_position + 450, Y_position+150, X_size, Y_size)
+            edge(X_position + 450, Y_position + 150, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -583,8 +1190,13 @@ while run:
                     speak('머리가 아파요')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 11
+                symptom = "두통"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 11:
-            edge(X_position + 600, Y_position+150, X_size, Y_size)
+            edge(X_position + 600, Y_position + 150, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -593,8 +1205,13 @@ while run:
                     speak('설사해요')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 12
+                symptom = "설사"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 12:
-            edge(X_position + 750, Y_position+150, X_size, Y_size)
+            edge(X_position + 750, Y_position + 150, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -603,8 +1220,13 @@ while run:
                     speak('맛을 잘 못느껴요')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 13
+                symptom = "미각상실"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
         if button_down == 13:
-            edge(X_position + 900, Y_position+150, X_size, Y_size)
+            edge(X_position + 900, Y_position + 150, X_size, Y_size)
             if check == 1:
                 n = 0
             check = 0
@@ -613,8 +1235,20 @@ while run:
                     speak('증상이 없어요')
                     s += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 14
+                symptom = "증상없음"
+                symptoms.append(symptom)
+                wr.writerow([4.5, '증상', symptoms])
+
+        print(symptoms)
+
+
+
 
     if part == 2 and step == 3 and p_part == 2:
+        umsize = len(agree)
+        agree_num = num_input
         X_position = 295
         Y_position = 505
         X_size = 55
@@ -640,10 +1274,13 @@ while run:
                 n = 0
             check = 0
             if n == 1:
-                while checking_personal_info < 3:
+                while checking_personal_info < 5:
                     speak('예')
                     checking_personal_info += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 1
+                agrees.append(agree[agree_num - 1])
         if button_down == 1:
             X_position = 895
             Y_position = 505
@@ -653,12 +1290,18 @@ while run:
                 n = 0
             check = 0
             if n == 1:
-                while checking_personal_info < 4:
+                while checking_personal_info < 6:
                     speak('아니요')
                     checking_personal_info += 1
                 check = 1
+            if checking_gpio == 1:
+                num_input = 2
+                agrees.append(agree[agree_num - 1])
 
-
+        while z < 4:
+            wr.writerow([5, '개인정보 수집 동의여부', agrees[agree_num - 1]])
+            z += 1
+        print(agrees)
     if part == 2 and step == 4 and p_part == 2:
         part = 3
         step = 0
@@ -666,8 +1309,8 @@ while run:
     # 상담 부분 뺼예정...
 
     # 코
-    #if part == 3 and step == 1 and p_part == 0:
-        #part3_start()
+    # if part == 3 and step == 1 and p_part == 0:
+    # part3_start()
     if part == 3 and step == 0 and p_part == 0:
         part3_intro()
         print(s)
@@ -999,6 +1642,6 @@ while run:
     # FPSCLOCK.tick(500)
     pygame.time.delay(500)
     n = 1
-    #check_front = 0
+    # check_front = 0
 pygame.quit()
-#f.close()
+# f.close()

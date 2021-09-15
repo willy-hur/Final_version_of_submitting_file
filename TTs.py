@@ -1,7 +1,9 @@
 # pip install speechrecognition
 # pip install gTTs
 # pip install playsound
-
+import submit_main_def
+tts_for_juso = 0
+count_juso = 0
 import speech_recognition as sr
 from gtts import gTTS
 import os
@@ -23,6 +25,8 @@ def speak(text):
     # Sound.play()
 
 #speak('안녕하세요 이로드 입니다.')
+
+
 
 '''
 # pip install speechrecognition
