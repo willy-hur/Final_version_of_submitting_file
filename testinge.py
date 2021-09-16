@@ -1,6 +1,7 @@
 from TTs import *
 from submit_main_def import *
 import csv
+from main_test import*
 
 counter = 0
 FPSCLOCK = pygame.time.Clock()
@@ -311,6 +312,7 @@ while run:
         button_down = 0
         name_def()
         part2_family_001()
+        input_1 = "너"
         keyshape(counter, input_1)
         if check == 1:
             n = 0
@@ -399,6 +401,8 @@ while run:
     if part == 2 and step == 4 and p_part == 1:
         part2_family_005()
         birth_def()
+        keyboard_input(num_input)
+        num_input = input_1
         keyshape(counter, input_1)
         button_down = 0
         if check == 1:
@@ -410,7 +414,6 @@ while run:
                 s += 1
         # print("생년월일을 입력해 주세요")
         if checking_gpio == 1:
-            num_input = "020824"
             birth = num_input
             # 답변 숫자 입력한 후 다음 누름
             births.append(birth)
@@ -511,7 +514,7 @@ while run:
                 num_input = 1
                 numsize = len(ad_jg)
                 ad_num = num_input
-                adress_1.append(ad_jg[ad_num - 1])
+                adress_1.insert(0, ad_jg[ad_num - 1])
                 ad_num = 0
                 num_input = 0
                 wr.writerow([3, '주소 동:', adress_1[0]])
@@ -566,7 +569,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_dg)
-                adress_1.append(ad_dg[ad_num - 1])
+                adress_1.insert(0, ad_dg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -592,7 +595,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_ydg)
-                adress_1.append(ad_ydg[ad_num - 1])
+                adress_1.insert(0,ad_ydg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -618,7 +621,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_jg)
-                adress_1.append(ad_jg[ad_num - 1])
+                adress_1.insert(0,ad_jg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -644,7 +647,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_drg)
-                adress_1.append(ad_drg[ad_num - 1])
+                adress_1.insert(0,ad_drg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -670,7 +673,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_ng)
-                adress_1.append(ad_ng[ad_num - 1])
+                adress_1.insert(0,ad_ng[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -696,7 +699,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_bg)
-                adress_1.append(ad_bg[ad_num - 1])
+                adress_1.insert(0,ad_bg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -722,7 +725,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_hudg)
-                adress_1.append(ad_hudg[ad_num - 1])
+                adress_1.insert(0,ad_hudg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -748,7 +751,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_shg)
-                adress_1.append(ad_shg[ad_num - 1])
+                adress_1.insert(0,ad_shg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -774,7 +777,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_gjg)
-                adress_1.append(ad_gjg[ad_num - 1])
+                adress_1.insert(0,ad_gjg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -799,7 +802,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_gsg)
-                adress_1.append(ad_gsg[ad_num - 1])
+                adress_1.insert(0,ad_gsg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -825,7 +828,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_yjg)
-                adress_1.append(ad_yjg[ad_num - 1])
+                adress_1.insert(0,ad_yjg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -851,7 +854,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_syg)
-                adress_1.append(ad_syg[ad_num - 1])
+                adress_1.insert(0,ad_syg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -877,7 +880,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_ssg)
-                adress_1.append(ad_ssg[ad_num - 1])
+                adress_1.insert(0,ad_ssg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -902,7 +905,7 @@ while run:
                 num_input = 1
                 ad_num = num_input
                 numsize = len(ad_kjg)
-                adress_1.append(ad_kjg[ad_num - 1])
+                adress_1.insert(0,ad_kjg[ad_num - 1])
                 wr.writerow([3, '주소 동:', adress_1[0]])
                 ad_num = 0
                 num_input = 0
@@ -1350,7 +1353,7 @@ while run:
                 n = 0
             check = 0
             if n == 1:
-                while checking_personal_info < 5:
+                while checking_personal_info < 4:
                     speak('예')
                     checking_personal_info += 1
                 check = 1
@@ -1368,7 +1371,7 @@ while run:
                 n = 0
             check = 0
             if n == 1:
-                while checking_personal_info < 6:
+                while checking_personal_info < 5:
                     speak('아니요')
                     checking_personal_info += 1
                 check = 1

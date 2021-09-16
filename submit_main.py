@@ -1,7 +1,7 @@
 from TTs import *
 from submit_main_def import *
 import csv
-
+import main_test
 
 counter = 0
 FPSCLOCK = pygame.time.Clock()

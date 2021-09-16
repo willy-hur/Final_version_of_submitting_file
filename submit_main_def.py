@@ -24,10 +24,10 @@ def personal_info():
 def keyshape(counter, input_1):
     # 여기서는 키패드에서 받아온 한글, 숫자 출력문
     # 아래 4줄은 완성후 지울 예정
-    if counter % 2 == 0:
+    """if counter % 2 == 0:
         input_1 = "부산시 금정구 장전|"
     if counter % 2 == 1:
-        input_1 = "엉"
+        input_1 = "엉" """
     # 아래 3줄은 파이게임 창에서 택스트 출력문
     myfont = pygame.font.Font('IropkeBatangM.ttf', 35)  # 폰트 종류, 크기 설정
     message1 = myfont.render(input_1, True, (0, 0, 0))  # 출력할 텍스트, 하이라이트 색 설정
