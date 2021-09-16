@@ -1,7 +1,8 @@
 import pygame
 import time
+#import TTs
 
-# from TTs import*
+from TTs import*
 pygame.init()  # pygame을 시작할다고 선언
 interface = pygame.display.set_mode((1280, 650), 0, 32)  # 해상도 1240*720의 창을 정의
 
@@ -625,3 +626,7 @@ agree = ['예', '아니오']
 visit = ['예', '아니오']
 
 sex = ['남', '여']
+
+
+
+

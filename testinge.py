@@ -39,6 +39,8 @@ checking_personal_info = 0
 extra_TTs = 0
 checking_gpio = 0
 end = 0
+dong = 0
+sex_s = 0
 
 visit_num = 0
 # show = 33
@@ -54,7 +56,7 @@ p_nums = []
 whys = []
 agrees = []
 names = []
-adress = []
+adress = ['서구']
 adress_1 = []
 num_input = 1
 checking_gpio = 0
@@ -62,6 +64,8 @@ tts_for_juso = 0
 count_juso = 0
 JUSO_GU = 0
 z = 0
+global sex_num
+sex_num = 3
 
 # pygame 본격 시작문
 while run:
@@ -96,12 +100,17 @@ while run:
                 num_input = 1
             elif event.key == pygame.K_8:
                 button_down += 1
+                checking_gpio = 0
             elif event.key == pygame.K_2:
                 step = 0
                 part = 2
                 p_part = 0
                 fever = 0
                 s = 9
+            elif event.key == pygame.K_3:
+                part = 2
+                step = 3
+                p_part = 2
 
     # 본격 시작
     if step == 0 and part == 0 and p_part == 0:  # 파트를 각각 part p_part, step로써 분리, step는 각 마지막 폴터안에 있는 사진기준
@@ -335,27 +344,28 @@ while run:
             while s < 12:
                 speak('성별을 입력해주세요.')
                 s += 1
-
+        checking_gpio = 0
         if button_down == 0:
             X_position = 295
             Y_position = 505
             X_size = 55
             Y_size = 55
             edge(X_position, Y_position, X_size, Y_size)
-            if check == 1:
-                n = 0
-            check = 0
+
+            # sexs.append(sex[sex_num - 1])
+            # sexs.append(sex[sex_num - 1])
+            # sex_num = 0
+            numsize = 0
+            num_input = 0
+
             if n == 1:
                 while checking_personal_info < 2:
                     speak('남성')
                     checking_personal_info += 1
                 check = 1
-                if checking_gpio == 1:
-                    sex_num = 1
-                    sexs.append(sex[sex_num - 1])
-                    sex_num = 0
-                    numsize = 0
-                    num_input = 0
+            if checking_gpio == 1 and button_down == 0 and checking_personal_info == 1:
+                sex_num = 1
+            sexs.insert(0, sex[sex_num-1])
 
         if button_down == 1:
             X_position = 895
@@ -363,6 +373,10 @@ while run:
             X_size = 55
             Y_size = 55
             edge(X_position, Y_position, X_size, Y_size)
+
+            # sex_num = 0
+            numsize = 0
+            num_input = 0
             if check == 1:
                 n = 0
             check = 0
@@ -371,18 +385,16 @@ while run:
                     speak('여성')
                     checking_personal_info += 1
                 check = 1
-                if checking_gpio == 1:
-                    sex_num = 2
-                    sexs.append(sex[sex_num - 1])
-                    sex_num = 0
-                    numsize = 0
-                    num_input = 0
-        # print("성별을 선택해 주세요")
-        # print("1. 남, 2. 여")
+            if checking_gpio == 1 and button_down == 1 and checking_personal_info == 2:
+                sex_num = 2
+            sexs.insert(0, sex[sex_num - 1])
 
-        # 답변 숫자 입력한 후 다음 누름
 
-        print(sexs[0])
+
+            # print("성별을 선택해 주세요")
+            # print("1. 남, 2. 여")
+
+            # 답변 숫자 입력한 후 다음 누름
 
     if part == 2 and step == 4 and p_part == 1:
         part2_family_005()
@@ -466,437 +478,436 @@ while run:
                 count_juso += 1
                 tts_for_juso += 1
             check = 1
+
+        if checking_gpio == 1 and dong != 1:
             num_input = 2
-        if checking_gpio == 1:
             ad_len = len(ad)
             # num input받고
             ad_num = num_input
-            adress.append(ad[ad_num - 1])
+            adress.insert(0, ad[ad_num - 1])
             print(adress)
             ad_num = 0
-            num_input = 0
 
-            while end < 1:
-                wr.writerow([3, '주소, 구:', adress[0]])
-                end += 1
+            wr.writerow([3, '주소, 구:', adress[0]])
+
+            # checking_gpio = 0
+            dong = 1
+        if adress[0] == '1.중구':  # 중구
             checking_gpio = 0
+            count_juso = 0
+            juso_junggo()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 28:
+                    JUSO_GU = ad_jg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+                check = 1
 
-            if adress[0] == '1.중구':  # 중구
-                checking_gpio = 0
-                count_juso = 0
-                juso_junggo()
-                if check == 1:
-                    n = 0
+            if checking_gpio == 1:
+                num_input = 1
+                numsize = len(ad_jg)
+                ad_num = num_input
+                adress_1.append(ad_jg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress_1[0]])
+
+            print(adress)
+
+
+        elif adress[0] == '2.서구':  # 서구
+            print(tts_for_juso )
+            count_juso = 0
+            juso_sugu()
+            if check == 1:
+                n = 0
+            else:
+                n = 1
+            check = 0
+            if n == 1:
+                while tts_for_juso < 27:
+                    JUSO_GU = ad_sg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
                 check = 0
-                if n == 1:
-                    while tts_for_juso < 28:
-                        JUSO_GU = ad_jg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                    num_input = 1
-                if checking_gpio == 1:
-                    numsize = len(ad_jg)
-                    ad_num = num_input
-                    adress_1.append(ad_jg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+                checking_gpio = 0
+            if checking_gpio == 1:
+                num_input = 1
+                checking_gpio = 0
+                numsize = len(ad_jg)
+                ad_num = num_input
+                adress_1.insert(0,ad_sg[ad_num - 1])
+                ad_num = 0
+                num_input = 0
+                wr.writerow([3, '주소 동:', adress_1[0]])
+
+            print(adress)
+
+        elif adress[0] == '3.동구':  # 동구
+            checking_gpio = 0
+            count_juso = 0
+            juso_donggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 21:
+                    JUSO_GU = ad_dg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+                check = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_dg)
+                adress_1.append(ad_dg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
 
                 print(adress)
 
 
-            elif adress[0] == '2.서구':  # 서구
-
-                count_juso = 0
-                juso_sugu()
-                if check == 1:
-                    n = 0
+        elif adress[0] == '4.영도구':  # 영도구
+            checking_gpio = 0
+            count_juso = 0
+            juso_yongdogu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_ydg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
                 check = 0
-                if n == 1:
-                    while tts_for_juso < 27:
-                        JUSO_GU = ad_sg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                    checking_gpio = 0
-                    print("근처")
-                if checking_gpio == 1:
-                    print("안쪽")
-                    num_input = 1
-                    numsize = len(ad_jg)
-                    ad_num = num_input
-                    adress_1.append(ad_jg[ad_num - 1])
-                    wr.writerow([3.5, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_ydg)
+                adress_1.append(ad_ydg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
+
+            print(adress)
 
 
-                print(adress)
-
-            elif adress[0] == '3.동구':  # 동구
-                checking_gpio = 0
-                count_juso = 0
-                juso_donggu()
-                if check == 1:
-                    n = 0
+        elif adress[0] == '5.부산진구':  # 부산진구
+            checking_gpio = 0
+            count_juso = 0
+            juso_busanjingu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 28:
+                    JUSO_GU = ad_jg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
                 check = 0
-                if n == 1:
-                    while tts_for_juso < 21:
-                        JUSO_GU = ad_dg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_dg)
-                    adress_1.append(ad_dg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_jg)
+                adress_1.append(ad_jg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
 
-                    print(adress)
+            print(adress)
 
 
-            elif adress[0] == '4.영도구':  # 영도구
-                checking_gpio = 0
-                count_juso = 0
-                juso_yongdogu()
-                if check == 1:
-                    n = 0
+        elif adress[0] == '6.동래구':  # 동래구
+            checking_gpio = 0
+            count_juso = 0
+            juso_donglaygu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_drg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
                 check = 0
-                if n == 1:
-                    while tts_for_juso < 25:
-                        JUSO_GU = ad_ydg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_ydg)
-                    adress_1.append(ad_ydg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_drg)
+                adress_1.append(ad_drg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
 
-                print(adress)
+            print(adress)
 
 
-            elif adress[0] == '5.부산진구':  # 부산진구
-                checking_gpio = 0
-                count_juso = 0
-                juso_busanjingu()
-                if check == 1:
-                    n = 0
+        elif adress[0] == '7.남구':  # 남구
+            checking_gpio = 0
+            count_juso = 0
+            juso_namgu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 23:
+                    JUSO_GU = ad_ng[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
                 check = 0
-                if n == 1:
-                    while tts_for_juso < 28:
-                        JUSO_GU = ad_jg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_jg)
-                    adress_1.append(ad_jg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_ng)
+                adress_1.append(ad_ng[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
 
-                print(adress)
+            print(adress)
 
 
-            elif adress[0] == '6.동래구':  # 동래구
-                checking_gpio = 0
-                count_juso = 0
-                juso_donglaygu()
-                if check == 1:
-                    n = 0
+        elif adress[0] == '8.북구':  # 북구
+            checking_gpio = 0
+            count_juso = 0
+            juso_bokygu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 22:
+                    JUSO_GU = ad_bg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
                 check = 0
-                if n == 1:
-                    while tts_for_juso < 25:
-                        JUSO_GU = ad_drg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_drg)
-                    adress_1.append(ad_drg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_bg)
+                adress_1.append(ad_bg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
 
-                print(adress)
+            print(adress)
 
 
-            elif adress[0] == '7.남구':  # 남구
-                checking_gpio = 0
-                count_juso = 0
-                juso_namgu()
-                if check == 1:
-                    n = 0
+        elif adress[0] == '9.해운대구':  # 해운대구
+            checking_gpio = 0
+            count_juso = 0
+            juso_heyundaygu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_hudg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
                 check = 0
-                if n == 1:
-                    while tts_for_juso < 23:
-                        JUSO_GU = ad_ng[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_ng)
-                    adress_1.append(ad_ng[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_hudg)
+                adress_1.append(ad_hudg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
 
                 print(adress)
 
 
-            elif adress[0] == '8.북구':  # 북구
-                checking_gpio = 0
-                count_juso = 0
-                juso_bokygu()
-                if check == 1:
-                    n = 0
+        elif adress[0] == '10.사하구':  # 사하구
+            checking_gpio = 0
+            count_juso = 0
+            juso_sahagu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_shg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
                 check = 0
-                if n == 1:
-                    while tts_for_juso < 22:
-                        JUSO_GU = ad_bg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_bg)
-                    adress_1.append(ad_bg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_shg)
+                adress_1.append(ad_shg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
+
+            print(adress)
+
+
+        elif adress[0] == '11.금정구':  # 금정구
+            checking_gpio = 0
+            count_juso = 0
+            juso_gumjunggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 30:
+                    JUSO_GU = ad_gjg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+                check = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_gjg)
+                adress_1.append(ad_gjg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
+
+            print(adress)
+
+        elif adress[0] == '12.강서구':  # 강서구
+            checking_gpio = 0
+            count_juso = 0
+            juso_gangsogu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 38:
+                    JUSO_GU = ad_gsg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+                check = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_gsg)
+                adress_1.append(ad_gsg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
+
+            print(adress)
+
+
+        elif adress[0] == '13.연제구':  # 연제구
+            checking_gpio = 0
+            count_juso = 0
+            juso_yenjaegu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 19:
+                    JUSO_GU = ad_yjg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+                check = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_yjg)
+                adress_1.append(ad_yjg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
+
+            print(adress)
+
+
+        elif adress[0] == '14.수영구':  # 수영구
+            checking_gpio = 0
+            count_juso = 0
+            juso_suyonggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 22:
+                    JUSO_GU = ad_syg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+                check = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_syg)
+                adress_1.append(ad_syg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
 
                 print(adress)
 
 
-            elif adress[0] == '9.해운대구':  # 해운대구
-                checking_gpio = 0
-                count_juso = 0
-                juso_heyundaygu()
-                if check == 1:
-                    n = 0
+        elif adress[0] == '15.사상구':  # 사상구
+            checking_gpio = 0
+            count_juso = 0
+            juso_sasanggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 25:
+                    JUSO_GU = ad_ssg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
                 check = 0
-                if n == 1:
-                    while tts_for_juso < 25:
-                        JUSO_GU = ad_hudg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_hudg)
-                    adress_1.append(ad_hudg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_ssg)
+                adress_1.append(ad_ssg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
 
-                    print(adress)
+            print(adress)
 
 
-            elif adress[0] == '10.사하구':  # 사하구
-                checking_gpio = 0
-                count_juso = 0
-                juso_sahagu()
-                if check == 1:
-                    n = 0
-                check = 0
-                if n == 1:
-                    while tts_for_juso < 25:
-                        JUSO_GU = ad_shg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_shg)
-                    adress_1.append(ad_shg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
+        elif adress[0] == '16.기장구':  # 기장구
+            checking_gpio = 0
+            count_juso = 0
+            juso_gijianggu()
+            if check == 1:
+                n = 0
+            check = 0
+            if n == 1:
+                while tts_for_juso < 22:
+                    JUSO_GU = ad_kjg[count_juso]
+                    speak(JUSO_GU)
+                    count_juso += 1
+                    tts_for_juso += 1
+            if checking_gpio == 1:
+                num_input = 1
+                ad_num = num_input
+                numsize = len(ad_kjg)
+                adress_1.append(ad_kjg[ad_num - 1])
+                wr.writerow([3, '주소 동:', adress_1[0]])
+                ad_num = 0
+                num_input = 0
 
-                print(adress)
-
-
-            elif adress[0] == '11.금정구':  # 금정구
-                checking_gpio = 0
-                count_juso = 0
-                juso_gumjunggu()
-                if check == 1:
-                    n = 0
-                check = 0
-                if n == 1:
-                    while tts_for_juso < 30:
-                        JUSO_GU = ad_gjg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_gjg)
-                    adress_1.append(ad_gjg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
-
-                print(adress)
-
-
-            elif adress[0] == '12.강서구':  # 강서구
-                checking_gpio = 0
-                count_juso = 0
-                juso_gangsogu()
-                if check == 1:
-                    n = 0
-                check = 0
-                if n == 1:
-                    while tts_for_juso < 38:
-                        JUSO_GU = ad_gsg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_gsg)
-                    adress_1.append(ad_gsg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
-
-                print(adress)
-
-
-            elif adress[0] == '13.연제구':  # 연제구
-                checking_gpio = 0
-                count_juso = 0
-                juso_yenjaegu()
-                if check == 1:
-                    n = 0
-                check = 0
-                if n == 1:
-                    while tts_for_juso < 19:
-                        JUSO_GU = ad_yjg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_yjg)
-                    adress_1.append(ad_yjg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
-
-                print(adress)
-
-
-            elif adress[0] == '14.수영구':  # 수영구
-                checking_gpio = 0
-                count_juso = 0
-                juso_suyonggu()
-                if check == 1:
-                    n = 0
-                check = 0
-                if n == 1:
-                    while tts_for_juso < 22:
-                        JUSO_GU = ad_syg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_syg)
-                    adress_1.append(ad_syg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
-
-                    print(adress)
-
-
-            elif adress[0] == '15.사상구':  # 사상구
-                checking_gpio = 0
-                count_juso = 0
-                juso_sasanggu()
-                if check == 1:
-                    n = 0
-                check = 0
-                if n == 1:
-                    while tts_for_juso < 25:
-                        JUSO_GU = ad_ssg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                    check = 0
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_ssg)
-                    adress_1.append(ad_ssg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
-
-                print(adress)
-
-
-            elif adress[0] == '16.기장구':  # 기장구
-                checking_gpio = 0
-                count_juso = 0
-                juso_gijianggu()
-                if check == 1:
-                    n = 0
-                check = 0
-                if n == 1:
-                    while tts_for_juso < 22:
-                        JUSO_GU = ad_kjg[count_juso]
-                        speak(JUSO_GU)
-                        count_juso += 1
-                        tts_for_juso += 1
-                if checking_gpio == 1:
-                    num_input = 1
-                    ad_num = num_input
-                    numsize = len(ad_kjg)
-                    adress_1.append(ad_kjg[ad_num - 1])
-                    wr.writerow([3, '주소 동:', adress_1[0]])
-                    ad_num = 0
-                    num_input = 0
-
-                print(adress)
+            print(adress)
 
         print("상세주소를 입력해 주세요")
         # 주소 입력받기
@@ -904,7 +915,7 @@ while run:
         print(adress)
         # ad_num=num_input 주소받기
 
-        #wr.writerow([3, '상세 주소', adress[]])
+        # wr.writerow([3, '상세 주소', adress[]])
 
     if part == 2 and step == 8 and p_part == 1:
         step = 0
@@ -1044,9 +1055,6 @@ while run:
                 wr.writerow([4, '검사경위', whys[0]])
             checking_gpio = 0
         # num_input = 0 여기서는 초기화 하면 x
-
-
-
 
     ########################################################################
     if part == 2 and step == 2 and p_part == 3:
@@ -1310,11 +1318,10 @@ while run:
                 wr.writerow([4.5, '증상', symptoms])
 
         print(symptoms)
-
-
-
+        button_down = 0
 
     if part == 2 and step == 3 and p_part == 2:
+
         umsize = len(agree)
         agree_num = num_input
         checking_gpio == 0
@@ -1343,7 +1350,7 @@ while run:
                 n = 0
             check = 0
             if n == 1:
-                while checking_personal_info < 4:
+                while checking_personal_info < 5:
                     speak('예')
                     checking_personal_info += 1
                 check = 1
@@ -1361,7 +1368,7 @@ while run:
                 n = 0
             check = 0
             if n == 1:
-                while checking_personal_info < 5:
+                while checking_personal_info < 6:
                     speak('아니요')
                     checking_personal_info += 1
                 check = 1
@@ -1382,6 +1389,7 @@ while run:
     # if part == 3 and step == 1 and p_part == 0:
     # part3_start()
     if part == 3 and step == 0 and p_part == 0:
+        print(s)
         part3_intro()
         print(s)
         if check == 1:
